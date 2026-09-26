@@ -1,37 +1,68 @@
-# mod-race-class-combos
+# mod-forever-races
 
-An [AzerothCore](https://www.azerothcore.org/) module (WotLK 3.3.5a) that unlocks additional
-race/class combinations.
+An [AzerothCore](https://www.azerothcore.org/) (WotLK 3.3.5a) module that unlocks the new
+race/class combinations from World of Warcraft: Forever:
+
+| Faction  | Combo          |
+|----------|----------------|
+| Horde    | Orc Mage       |
+| Horde    | Troll Warlock  |
+| Horde    | Undead Paladin |
+| Alliance | Human Hunter   |
+| Alliance | Gnome Priest   |
+| Alliance | Dwarf Shaman   |
+
+Forever's new Skyborne race and its reworked racials are not included.
+
+Forked from [maluramichael/mod-race-class-combos](https://github.com/maluramichael/mod-race-class-combos).
 
 ## What it does
 
-Adds server-side character-creation data for combinations that are normally unavailable, for
-example Gnome Priest, Human Hunter, Dwarf Shaman, Orc Mage, Troll Warlock and Undead Paladin.
+- **Character creation.** Each combo gets a start position in its race's starting zone, an
+  action bar and starter gear. Starting skills and spells need no extra rows: the core keys them
+  by race and class bitmasks (`playercreateinfo_skills`, `playercreateinfo_spell_custom`), so a
+  race's racials and a class's abilities already cover any new pairing.
+- **Class quests.** Class quests only allow the races that could originally play the class
+  (`quest_template.AllowableRaces`). Without a fix the new combos could never learn quest-only
+  spells and items: Tame Beast, the Water and Air Totems, the Voidwalker, Redemption and the
+  paladin mounts. The module lets each new race take the single-class quests of a same-faction
+  donor race:
 
-The heavy lifting is data-driven and minimal: because starting skills and spells are keyed by
-race/class **bitmasks** (`playercreateinfo_skills`, `playercreateinfo_spell_custom`), a race's
-racials and a class's abilities already apply to any new pairing. The module only needs to add
-a **start position** and an **action bar** per combination.
+  | Combo          | Donor race | Where                     |
+  |----------------|------------|---------------------------|
+  | Human Hunter   | Dwarf      | Kharanos, Dun Morogh      |
+  | Dwarf Shaman   | Draenei    | Azuremyst Isle / Exodar   |
+  | Troll Warlock  | Orc        | Valley of Trials, Durotar |
+  | Undead Paladin | Blood Elf  | Eversong / Silvermoon     |
+  | Orc Mage       | Troll      | Valley of Trials, Durotar |
+  | Gnome Priest   | Dwarf      | Coldridge Valley          |
 
-## Client patch required
-
-The 3.3.5a client decides which combinations to *offer* in the character-creation screen from
-`CharBaseInfo.dbc`. To see and pick the new combinations you must load a patched
-`CharBaseInfo.dbc` on the client (a small MPQ patch). Without it the server accepts the
-combinations but the client won't let you select them.
-
-## Configuration
-
-`conf/mod_race_class_combos.conf.dist`:
-
-| Key                          | Default | Description                         |
-|------------------------------|---------|-------------------------------------|
-| `RaceClassCombos.Announce`   | `1`     | Log a line at startup when active   |
+All SQL is safe to run more than once.
 
 ## Installation
 
-Clone into your AzerothCore `modules/` directory and rebuild the worldserver; the SQL applies
-automatically on the next start. Then load the client `CharBaseInfo.dbc` patch.
+```bash
+cd azerothcore/modules
+git clone https://github.com/buildthehomelab/wow-mod-forever-races.git mod-forever-races
+```
+
+Clone into `mod-forever-races` exactly: AzerothCore derives the module's loader function from the
+folder name. Rebuild the worldserver; the SQL applies on the next start.
+
+## Client patch required
+
+The 3.3.5a client decides which combinations to offer on the character-creation screen from
+`CharBaseInfo.dbc`. Copy `Client_Patch/patch-8.MPQ` into each client's `Data/` folder (rename it
+if `patch-8.MPQ` is already taken). Without it the server accepts the combinations but the client
+won't let you pick them.
+
+## Configuration
+
+`conf/mod_forever_races.conf.dist`:
+
+| Key                     | Default | Description                       |
+|-------------------------|---------|-----------------------------------|
+| `ForeverRaces.Announce` | `1`     | Log a line at startup when active |
 
 ## License
 

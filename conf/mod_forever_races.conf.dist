@@ -1,7 +1,7 @@
 [worldserver]
 
 ########################################
-# mod-race-class-combos configuration
+# mod-forever-races configuration
 ########################################
 #
 # Unlocks additional race/class combinations. The combinations are added by this
@@ -13,8 +13,8 @@
 #
 
 #
-#    RaceClassCombos.Announce
+#    ForeverRaces.Announce
 #        1 = log a line at startup noting the module is active. 0 = quiet.
 #        Default: 1
 #
-RaceClassCombos.Announce = 1
+ForeverRaces.Announce = 1
