@@ -61,7 +61,8 @@ Forked from [maluramichael/mod-race-class-combos](https://github.com/maluramicha
   | Human Hunter   | Axes, Guns, Daggers    |
 
   Human Hunters also get Guns as a starting skill. Existing characters pick the skills up on
-  their next login.
+  their next login. The client reads the same table to decide which skills the character window
+  lists, so the client patch carries a matching `SkillRaceClassInfo.dbc`.
 
 All SQL is safe to run more than once.
 
@@ -82,7 +83,9 @@ The 3.3.5a client decides which combinations to offer on the character-creation 
 if `patch-8.MPQ` is already taken). Without it the server accepts the combinations but the client
 won't let you pick them.
 The patch also carries `CharStartOutfit.dbc` with starter outfits for the new combos, so the
-character-creation preview shows their gear.
+character-creation preview shows their gear, and `SkillRaceClassInfo.dbc` with the weapon-skill
+rows above. Without that file the combos can still use those weapons, but the skills are missing
+from the character window's Skills tab.
 
 ## Configuration
 
