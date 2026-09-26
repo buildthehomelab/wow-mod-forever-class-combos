@@ -70,6 +70,8 @@ The 3.3.5a client decides which combinations to offer on the character-creation 
 `CharBaseInfo.dbc`. Copy `Client_Patch/patch-8.MPQ` into each client's `Data/` folder (rename it
 if `patch-8.MPQ` is already taken). Without it the server accepts the combinations but the client
 won't let you pick them.
+The patch also carries `CharStartOutfit.dbc` with starter outfits for the new combos, so the
+character-creation preview shows their gear.
 
 ## Configuration
 
