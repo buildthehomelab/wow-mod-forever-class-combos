@@ -7,7 +7,7 @@
 -- Idempotent: bitwise OR.
 --
 -- Race bits:  Human 1, Orc 2, Dwarf 4, Undead 16, Gnome 64, Troll 128, Blood Elf 512, Draenei 1024
--- Class bits: Paladin 2, Hunter 4, Priest 16, Shaman 64, Mage 128, Warlock 256
+-- Class bits: Paladin 2, Hunter 4, Shaman 64, Mage 128, Warlock 256
 
 -- Human Hunter <- Dwarf hunter quests (Taming the Beast / Training the Beast in Kharanos)
 UPDATE `quest_template` qt JOIN `quest_template_addon` qta ON qta.`ID` = qt.`ID`
@@ -34,7 +34,5 @@ UPDATE `quest_template` qt JOIN `quest_template_addon` qta ON qta.`ID` = qt.`ID`
 SET qt.`AllowableRaces` = qt.`AllowableRaces` | 2
 WHERE qta.`AllowableClasses` = 128 AND (qt.`AllowableRaces` & 128) <> 0;
 
--- Gnome Priest <- Dwarf priest quests (Coldridge Valley)
-UPDATE `quest_template` qt JOIN `quest_template_addon` qta ON qta.`ID` = qt.`ID`
-SET qt.`AllowableRaces` = qt.`AllowableRaces` | 64
-WHERE qta.`AllowableClasses` = 16 AND (qt.`AllowableRaces` & 4) <> 0;
+-- Gnome Priest: no rule. The only Dwarf priest quests gnomes can't take are the Dwarf intro
+-- letter and the old racial-spell quests (Desperate Prayer, Fear Ward), which gnomes shouldn't get.

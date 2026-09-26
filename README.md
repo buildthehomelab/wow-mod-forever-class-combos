@@ -35,7 +35,9 @@ Forked from [maluramichael/mod-race-class-combos](https://github.com/maluramicha
   | Troll Warlock  | Orc        | Valley of Trials, Durotar |
   | Undead Paladin | Blood Elf  | Eversong / Silvermoon     |
   | Orc Mage       | Troll      | Valley of Trials, Durotar |
-  | Gnome Priest   | Dwarf      | Coldridge Valley          |
+
+  Gnome Priests need no donor: the only priest quests they can't take are other races'
+  racial-spell quests (Desperate Prayer, Fear Ward).
 
 All SQL is safe to run more than once.
 
