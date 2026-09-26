@@ -1,5 +1,5 @@
 /*
- * mod-forever-races
+ * mod-forever-class-combo
  *
  * Unlocks additional race/class combinations. The actual work is data-driven:
  * the module ships SQL that adds playercreateinfo (start position) and action-bar
@@ -21,19 +21,19 @@
 #include "Log.h"
 #include "ScriptMgr.h"
 
-class ForeverRacesWorldScript : public WorldScript
+class ForeverClassComboWorldScript : public WorldScript
 {
 public:
-    ForeverRacesWorldScript() : WorldScript("ForeverRaces_WorldScript") { }
+    ForeverClassComboWorldScript() : WorldScript("ForeverClassCombo_WorldScript") { }
 
     void OnAfterConfigLoad(bool /*reload*/) override
     {
-        if (sConfigMgr->GetOption<bool>("ForeverRaces.Announce", true))
-            LOG_INFO("server.loading", "[mod-forever-races] Extra race/class combinations enabled (client needs the CharBaseInfo.dbc patch).");
+        if (sConfigMgr->GetOption<bool>("ForeverClassCombo.Announce", true))
+            LOG_INFO("server.loading", "[mod-forever-class-combo] Extra race/class combinations enabled (client needs the CharBaseInfo.dbc patch).");
     }
 };
 
-void AddForeverRacesScripts()
+void AddForeverClassComboScripts()
 {
-    new ForeverRacesWorldScript();
+    new ForeverClassComboWorldScript();
 }

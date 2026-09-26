@@ -1,4 +1,4 @@
-# mod-forever-races
+# mod-forever-class-combo
 
 An [AzerothCore](https://www.azerothcore.org/) (WotLK 3.3.5a) module that unlocks the new
 race/class combinations from World of Warcraft: Forever:
@@ -58,10 +58,10 @@ All SQL is safe to run more than once.
 
 ```bash
 cd azerothcore/modules
-git clone https://github.com/buildthehomelab/wow-mod-forever-races.git mod-forever-races
+git clone https://github.com/buildthehomelab/wow-mod-forever-class-combo.git mod-forever-class-combo
 ```
 
-Clone into `mod-forever-races` exactly: AzerothCore derives the module's loader function from the
+Clone into `mod-forever-class-combo` exactly: AzerothCore derives the module's loader function from the
 folder name. Rebuild the worldserver; the SQL applies on the next start.
 
 ## Client patch required
@@ -73,11 +73,11 @@ won't let you pick them.
 
 ## Configuration
 
-`conf/mod_forever_races.conf.dist`:
+`conf/mod_forever_class_combo.conf.dist`:
 
-| Key                     | Default | Description                       |
-|-------------------------|---------|-----------------------------------|
-| `ForeverRaces.Announce` | `1`     | Log a line at startup when active |
+| Key                          | Default | Description                       |
+|------------------------------|---------|-----------------------------------|
+| `ForeverClassCombo.Announce` | `1`     | Log a line at startup when active |
 
 ## License
 
