@@ -38,6 +38,19 @@ Forked from [maluramichael/mod-race-class-combos](https://github.com/maluramicha
 
   Gnome Priests need no donor: the only priest quests they can't take are other races'
   racial-spell quests (Desperate Prayer, Fear Ward).
+- **Start-zone trainers.** Three of the new combos have no trainer for their class in their
+  starting zone, so the module adds one. Each is a copy of a capital trainer of that class, with
+  the same spells and its own name:
+
+  | Combo          | Trainer                   | Where                        | Copied from                          |
+  |----------------|---------------------------|------------------------------|--------------------------------------|
+  | Human Hunter   | Brannoc Stoneshield       | Northshire Abbey             | Thorfin Stoneshield, Stormwind       |
+  | Dwarf Shaman   | Farseer Amaan             | Anvilmar, Coldridge Valley   | Farseer Javad, Ironforge             |
+  | Undead Paladin | Champion Aeldris Dawnrose | Deathknell church            | Champion Cyssa Dawnrose, Undercity   |
+
+  They use creature entries and spawn guids 9500200–9500202.
+- **Earth Totem.** Dwarf Shamans start with an Earth Totem. The only Alliance quest for it is on
+  Azuremyst Isle, out of reach at level 4.
 
 All SQL is safe to run more than once.
 
