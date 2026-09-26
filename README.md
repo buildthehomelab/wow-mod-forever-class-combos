@@ -51,6 +51,17 @@ Forked from [maluramichael/mod-race-class-combos](https://github.com/maluramicha
   They use creature entries and spawn guids 9500200–9500202.
 - **Earth Totem.** Dwarf Shamans start with an Earth Totem. The only Alliance quest for it is on
   Azuremyst Isle, out of reach at level 4.
+- **Weapon skills.** A character only gets a skill if a `SkillRaceClassInfo` row covers its race
+  and class. Some stock weapon rows list only the races that could originally play the class, so
+  the module overrides them in `skillraceclassinfo_dbc` to add the new race:
+
+  | Combo          | Skills                 |
+  |----------------|------------------------|
+  | Undead Paladin | Swords                 |
+  | Human Hunter   | Axes, Guns, Daggers    |
+
+  Human Hunters also get Guns as a starting skill. Existing characters pick the skills up on
+  their next login.
 
 All SQL is safe to run more than once.
 
