@@ -7,6 +7,8 @@
 -- Override those rows through skillraceclassinfo_dbc, adding the new race to RaceMask. Each row is
 -- limited to one class, so no other race/class pair changes. Other fields are the stock 3.3.5a values.
 -- Existing characters pick the skills up on their next login (LearnDefaultSkills runs then).
+-- The client hides skills it has no row for from the Skills tab, so Client_Patch/patch-8.MPQ carries a
+-- SkillRaceClassInfo.dbc with the same four RaceMask changes. Keep the two in sync.
 -- Idempotent: clear then insert.
 --
 -- Race bits:  Human 1, Dwarf 4, Undead 16, Draenei 1024
