@@ -1,7 +1,7 @@
 -- Open class quests to the new race/class combos.
 -- Class quests are race-gated via quest_template.AllowableRaces to the races that could
 -- originally play the class, so a new combo can't learn key quest-only spells/items
--- (Tame Beast, Water/Air Totems, Voidwalker, Redemption, class mounts).
+-- (Tame Beast, Voidwalker, Redemption, class mounts).
 -- Each new race borrows a same-faction donor race's class quests.
 -- Only single-class quests (AllowableClasses = exactly that class) are touched.
 -- Idempotent: bitwise OR.
@@ -14,10 +14,9 @@ UPDATE `quest_template` qt JOIN `quest_template_addon` qta ON qta.`ID` = qt.`ID`
 SET qt.`AllowableRaces` = qt.`AllowableRaces` | 1
 WHERE qta.`AllowableClasses` = 4 AND (qt.`AllowableRaces` & 4) <> 0;
 
--- Dwarf Shaman <- Draenei shaman quests (Call of Earth/Fire/Water/Air, Azuremyst)
-UPDATE `quest_template` qt JOIN `quest_template_addon` qta ON qta.`ID` = qt.`ID`
-SET qt.`AllowableRaces` = qt.`AllowableRaces` | 4
-WHERE qta.`AllowableClasses` = 64 AND (qt.`AllowableRaces` & 1024) <> 0;
+-- Dwarf Shaman: no rule. Dwarves have their own Call of Earth/Fire/Water/Air chains in Khaz
+-- Modan (mod_forever_class_combos_2026_10_10_00_dwarf_shaman_quests.sql), which also takes
+-- the Dwarf bit back off the Draenei chains that an earlier version of this file opened.
 
 -- Troll Warlock <- Orc warlock quests (Creature of the Void in Durotar, Dreadsteed chain)
 UPDATE `quest_template` qt JOIN `quest_template_addon` qta ON qta.`ID` = qt.`ID`
