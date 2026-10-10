@@ -29,12 +29,13 @@
 --   gossip_menu / npc_text             9500210-9500213
 --   quest_template                     9500210-9500212 Earth, 9500213-9500216 Fire,
 --                                      9500217-9500221 Water, 9500222-9500223 Air
--- Idempotent: clears its own rows first.
+-- Idempotent: clears its own rows first. Spawn guids are deleted exactly, not by range: the
+-- server gives objects spawned in game MAX(guid)+1, which lands right after these.
 
 -- ---------------------------------------------------------------------------------------
 -- Clean up
 -- ---------------------------------------------------------------------------------------
-DELETE FROM `creature`                     WHERE `guid`          BETWEEN 9500210 AND 9500249;
+DELETE FROM `creature`                     WHERE `guid`          BETWEEN 9500210 AND 9500213;
 DELETE FROM `creature_template_model`      WHERE `CreatureID`    BETWEEN 9500210 AND 9500249;
 DELETE FROM `creature_template_addon`      WHERE `entry`         BETWEEN 9500210 AND 9500249;
 DELETE FROM `creature_template_movement`   WHERE `CreatureId`    BETWEEN 9500210 AND 9500249;
@@ -45,7 +46,7 @@ DELETE FROM `creature_text`                WHERE `CreatureID`    BETWEEN 9500210
 DELETE FROM `creature_questitem`           WHERE `CreatureEntry` BETWEEN 9500210 AND 9500249;
 DELETE FROM `smart_scripts`                WHERE `source_type` = 0 AND `entryorguid` BETWEEN 9500210 AND 9500249;
 DELETE FROM `creature_template`            WHERE `entry`         BETWEEN 9500210 AND 9500249;
-DELETE FROM `gameobject`                   WHERE `guid`          BETWEEN 9500210 AND 9500249;
+DELETE FROM `gameobject`                   WHERE `guid`          BETWEEN 9500210 AND 9500212;
 DELETE FROM `gameobject_template_addon`    WHERE `entry`         BETWEEN 9500210 AND 9500249;
 DELETE FROM `gameobject_template`          WHERE `entry`         BETWEEN 9500210 AND 9500249;
 DELETE FROM `event_scripts`                WHERE `id`            BETWEEN 9500210 AND 9500249;
@@ -58,7 +59,7 @@ DELETE FROM `quest_offer_reward`           WHERE `ID`            BETWEEN 9500210
 DELETE FROM `quest_request_items`          WHERE `ID`            BETWEEN 9500210 AND 9500249;
 DELETE FROM `quest_template_addon`         WHERE `ID`            BETWEEN 9500210 AND 9500249;
 DELETE FROM `quest_template`               WHERE `ID`            BETWEEN 9500210 AND 9500249;
-DELETE FROM `conditions`                   WHERE `SourceTypeOrReferenceId` = 19 AND `SourceEntry` BETWEEN 9500210 AND 9500249;
+DELETE FROM `conditions`                   WHERE `SourceTypeOrReferenceId` = 19 AND (`SourceEntry` BETWEEN 9500210 AND 9500249 OR `SourceEntry` = 9502);
 DELETE FROM `creature_loot_template`       WHERE (`Entry` = 1397 AND `Item` = 23733) OR (`Entry` = 1030 AND `Item` = 23744);
 DELETE FROM `creature_questitem`           WHERE (`CreatureEntry` = 1397 AND `ItemId` = 23733) OR (`CreatureEntry` = 1030 AND `ItemId` = 23744);
 
@@ -437,3 +438,8 @@ WHERE `ID` IN (9421,
                9500, 9501, 9503, 9504, 9508, 9509, 10490,
                9547, 9551, 9552, 9553, 9554, 10491)
   AND (`AllowableRaces` & 4) <> 0;
+
+-- Farseer Javad's stock breadcrumb to the Exodar, Call of Water (9502), allows every race, so
+-- there is no bit to take off. Hide it from dwarves instead (type 16 = race mask, negated).
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES
+(19, 0, 9502, 0, 0, 16, 0, 4, 0, 0, 1, 0, 0, '', 'Call of Water (Javad -> Nobundo): not for dwarves, who have their own chain');
