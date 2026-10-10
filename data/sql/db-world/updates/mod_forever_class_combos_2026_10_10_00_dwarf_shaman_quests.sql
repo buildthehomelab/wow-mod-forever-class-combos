@@ -22,6 +22,7 @@
 --                                      9500212 Meltwater             <- 17275 Aqueous
 --                                      9500213 Skirl                 <- 17435 Susurrus
 --   creature_template                  9500214 Tel'athion the Impure <- 17359 (no fixed move point)
+--                                      9500215 Water Spirit          <- 6748  (fights 9500214)
 --   gameobject_template / guid         9500210 Wickerman Effigy      <- 181672
 --                                      9500211 Stonewrought Spillway <- 107047 (spell focus 223)
 --                                      9500212 Barrel of Filth       <- 181699
@@ -64,7 +65,7 @@ DELETE FROM `creature_loot_template`       WHERE (`Entry` = 1397 AND `Item` = 23
 DELETE FROM `creature_questitem`           WHERE (`CreatureEntry` = 1397 AND `ItemId` = 23733) OR (`CreatureEntry` = 1030 AND `ItemId` = 23744);
 
 -- ---------------------------------------------------------------------------------------
--- Creatures: the four spirits and Tel'athion, copied from the Draenei chain
+-- Creatures: the four spirits, Tel'athion and his Water Spirits, copied from the Draenei chain
 -- ---------------------------------------------------------------------------------------
 DROP TEMPORARY TABLE IF EXISTS `tmp_fcc_npc`;
 CREATE TEMPORARY TABLE `tmp_fcc_npc` (
@@ -79,7 +80,8 @@ INSERT INTO `tmp_fcc_npc` (`old`, `new`, `name`, `gossip`, `ai`) VALUES
 (17205, 9500211, 'Smolder',               9500211, ''),
 (17275, 9500212, 'Meltwater',             9500212, ''),
 (17435, 9500213, 'Skirl',                 9500213, ''),  -- no SmartAI: Susurrus' flight to the Exodar stays behind
-(17359, 9500214, 'Tel''athion the Impure', 0,      'SmartAI');
+(17359, 9500214, 'Tel''athion the Impure', 0,      'SmartAI'),
+(6748,  9500215, 'Water Spirit',          0,      'SmartAI');
 
 DROP TEMPORARY TABLE IF EXISTS `tmp_fcc_copy`;
 CREATE TEMPORARY TABLE `tmp_fcc_copy` SELECT t.* FROM `creature_template` t JOIN `tmp_fcc_npc` m ON m.`old` = t.`entry`;
@@ -132,6 +134,26 @@ DROP TEMPORARY TABLE `tmp_fcc_copy`;
 CREATE TEMPORARY TABLE `tmp_fcc_copy` SELECT * FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` = 17359 AND `action_type` <> 69;
 UPDATE `tmp_fcc_copy` SET `entryorguid` = 9500214;
 INSERT INTO `smart_scripts` SELECT * FROM `tmp_fcc_copy`;
+
+-- The Water Spirits' script looks for Tel'athion by entry (event 75 "distance to creature",
+-- then "text over" -> attack target 11 "creature by entry"), so the stock spirits would stand
+-- idle next to the copy. Point the copies at 9500214, and at themselves for the text-over.
+DROP TEMPORARY TABLE `tmp_fcc_copy`;
+CREATE TEMPORARY TABLE `tmp_fcc_copy` SELECT * FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` = 6748;
+UPDATE `tmp_fcc_copy` SET
+  `event_param2`  = CASE WHEN `event_type` = 75 AND `event_param2` = 17359 THEN 9500214
+                         WHEN `event_type` = 52 AND `event_param2` = 6748  THEN 9500215
+                         ELSE `event_param2` END,
+  `target_param1` = CASE WHEN `target_type` = 11 AND `target_param1` = 17359 THEN 9500214 ELSE `target_param1` END,
+  `entryorguid`   = 9500215;
+INSERT INTO `smart_scripts` SELECT * FROM `tmp_fcc_copy`;
+
+-- Factions for a realm with cross-faction groups. The stock pair are Silvermoon (1657) and
+-- Exodar (1655): a Horde player could not attack Tel'athion, and the spirits would attack
+-- them. 16 = monster, hostile to every player; 250 = escortee, friendly to every player and
+-- hostile to monsters. The two stay hostile to each other, which the spirits' script needs.
+UPDATE `creature_template` SET `faction` = 16  WHERE `entry` = 9500214;
+UPDATE `creature_template` SET `faction` = 250 WHERE `entry` = 9500215;
 DROP TEMPORARY TABLE `tmp_fcc_copy`;
 DROP TEMPORARY TABLE `tmp_fcc_npc`;
 
@@ -194,7 +216,9 @@ DROP TEMPORARY TABLE `tmp_fcc_go`;
 
 -- Goobers: Data1 = quest that may use it, Data2 = event_scripts id.
 UPDATE `gameobject_template` SET `Data1` = 9500215, `Data2` = 9500210 WHERE `entry` = 9500210;
-UPDATE `gameobject_template` SET `Data1` = 9500220, `Data2` = 9500212 WHERE `entry` = 9500212;
+-- Data3 = ms before it can be used again (stock barrel 3 s, effigy 60 s); nothing else stops a
+-- second pour from summoning a second Tel'athion.
+UPDATE `gameobject_template` SET `Data1` = 9500220, `Data2` = 9500212, `Data3` = 60000 WHERE `entry` = 9500212;
 -- Spell focus 223 for the Empty Bota Bag. Data1 is the reach in yards (stock is 5).
 UPDATE `gameobject_template` SET `name` = 'Stonewrought Spillway', `Data1` = 20 WHERE `entry` = 9500211;
 
@@ -210,8 +234,8 @@ INSERT INTO `gameobject` (`guid`, `id`, `map`, `spawnMask`, `phaseMask`, `positi
 INSERT INTO `event_scripts` (`id`, `delay`, `command`, `datalong`, `datalong2`, `dataint`, `x`, `y`, `z`, `o`) VALUES
 (9500210, 2, 10,   17206, 900000, 0, -5555.0,    510.0,   382.4, 2.36),  -- Hauteur
 (9500212, 2, 10, 9500214, 900000, 0, -4059.11, -2849.83,   12.3, 0.47),  -- Tel'athion the Impure
-(9500212, 5, 10,    6748, 900000, 0, -4055.18, -2832.73,   12.3, 4.71),  -- Water Spirit
-(9500212, 5, 10,    6748, 900000, 0, -4045.81, -2841.53,   12.3, 3.73);  -- Water Spirit
+(9500212, 5, 10, 9500215, 900000, 0, -4055.18, -2832.73,   12.3, 4.71),  -- Water Spirit
+(9500212, 5, 10, 9500215, 900000, 0, -4045.81, -2841.53,   12.3, 3.73);  -- Water Spirit
 
 -- ---------------------------------------------------------------------------------------
 -- Quest drops from creatures that already live there (same chance as the Draenei sources)
@@ -430,7 +454,8 @@ INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry
 
 -- And dwarves no longer get the Draenei chains (stock Earth and Fire allow every Alliance
 -- race; Water, Air and Shaman Training were opened by this module's class-quest rule, which
--- no longer covers Dwarf Shamans). A dwarf already partway through one can still finish it.
+-- no longer covers Dwarf Shamans). A dwarf partway through one can hand in the step they
+-- hold but is not offered the next; the dwarf chain is, from its first step.
 UPDATE `quest_template` SET `AllowableRaces` = `AllowableRaces` & ~4
 WHERE `ID` IN (9421,
                9449, 9450, 9451,
